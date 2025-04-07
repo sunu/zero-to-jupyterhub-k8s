@@ -326,35 +326,38 @@ if extra_files:
         "secretName": get_name("singleuser"),
         "items": items,
     }
-    c.KubeSpawner.volumes[volume["name"]] = volume
+    c.KubeSpawner.volumes.update({volume["name"]: volume})
 
     for file_key, file_details in extra_files.items():
-        c.KubeSpawner.volume_mounts[f"files-{file_key}"] = {
+        volume_mount = {
             "mountPath": file_details["mountPath"],
             "subPath": file_key,
             "name": "files",
         }
+        c.KubeSpawner.volume_mounts.update({f"files-{file_key}": volume_mount})
 
 # Inject extraVolumes / extraVolumeMounts
 extra_volumes = get_config("singleuser.storage.extraVolumes", default={})
 if isinstance(extra_volumes, dict):
     for key, volume in extra_volumes.items():
-        c.KubeSpawner.volumes[key] = volume
+        c.KubeSpawner.volumes.update({key: volume})
 elif isinstance(extra_volumes, list):
     for volume in extra_volumes:
-        c.KubeSpawner.volumes[volume["name"]] = volume
+        c.KubeSpawner.volumes.update({volume["name"]: volume})
 
 extra_volume_mounts = get_config("singleuser.storage.extraVolumeMounts", default={})
 if isinstance(extra_volume_mounts, dict):
     for key, volume_mount in extra_volume_mounts.items():
-        c.KubeSpawner.volume_mounts[key] = volume_mount
+        c.KubeSpawner.volume_mounts.update({key: volume_mount})
 elif isinstance(extra_volume_mounts, list):
     # If extraVolumeMounts is a list, we need to add them to the volume_mounts
     # dictionary with a unique key.
     # Since volume mount's name is not guaranteed to be unique, we use the index
     # as part of the key.
     for idx, volume_mount in enumerate(extra_volume_mounts):
-        c.KubeSpawner.volume_mounts[f"{idx}-{volume_mount['name']}"] = volume_mount
+        c.KubeSpawner.volume_mounts.update(
+            {f"{idx}-{volume_mount['name']}": volume_mount}
+        )
 
 c.JupyterHub.services = []
 c.JupyterHub.load_roles = []
