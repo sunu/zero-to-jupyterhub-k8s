@@ -114,6 +114,27 @@ def test_spawn_basic(
             c.returncode == 0
         ), "singleuser.extraEnv didn't lead to a mounted environment variable!"
 
+        # print the pod's volumes and volume mounts
+        print("Volumes:")
+        print(
+            subprocess.check_output(
+                ["kubectl", "get", "pod", pod_name, "-o", "jsonpath='{.spec.volumes}'"]
+            )
+        )
+        print("Volume Mounts:")
+        print(
+            subprocess.check_output(
+                [
+                    "kubectl",
+                    "get",
+                    "pod",
+                    pod_name,
+                    "-o",
+                    "jsonpath='{.spec.volumeMounts}'",
+                ]
+            )
+        )
+
         # check user pod's extra files
         c = subprocess.run(
             [

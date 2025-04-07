@@ -328,13 +328,13 @@ if extra_files:
     }
     c.KubeSpawner.volumes.update({volume["name"]: volume})
 
-    for file_key, file_details in extra_files.items():
+    for idx, (file_key, file_details) in enumerate(extra_files.items()):
         volume_mount = {
             "mountPath": file_details["mountPath"],
             "subPath": file_key,
             "name": "files",
         }
-        c.KubeSpawner.volume_mounts.update({f"files-{file_key}": volume_mount})
+        c.KubeSpawner.volume_mounts.update({f"{idx}-files": volume_mount})
 
 # Inject extraVolumes / extraVolumeMounts
 extra_volumes = get_config("singleuser.storage.extraVolumes", default={})
