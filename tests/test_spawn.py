@@ -80,6 +80,8 @@ def test_spawn_basic(
                 pod_name,
             ]
         )
+        print("Pod JSON:")
+        print(pod_json)
         pod = json.loads(pod_json)
         pod_labels = pod["metadata"]["labels"]
 
